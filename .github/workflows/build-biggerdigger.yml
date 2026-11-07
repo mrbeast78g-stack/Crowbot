@@ -24,7 +24,7 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.4'
+          gradle-version: '8.6'
       - name: Extract mod source
         run: |
           mkdir source
@@ -35,6 +35,8 @@ jobs:
           PROJECT="$(find source -name settings.gradle.kts -printf '%h\n' | head -1)"
           test -n "$PROJECT"
           cd "$PROJECT"
+          # Loom 1.3.10 cannot handle the mixin remap type used by this project.
+          sed -i 's/version "1.3.10"/version "1.6.12"/' build.gradle.kts
           gradle --no-daemon clean build
       - name: Upload mod JAR
         uses: actions/upload-artifact@v4
